@@ -1,55 +1,48 @@
 import sys
 import pygame
-from pytmx.util_pygame import load_pygame
 
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_WIDTH, TILE_HEIGHT
-from sprites import Sprite, Tile
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from states import Controller, SplashScreen, ExitScreen, PlatformerGame
 
 
 class Game():
     def __init__(self):
         pygame.init()
+        pygame.display.set_caption("The Mini Games Project")
 
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.sprite_groups = {
-            'tiles': pygame.sprite.Group(),
-            'objects': pygame.sprite.Group()
-        }
+        self.clock = pygame.time.Clock()
+
+        self.running = True
+
+        self.controller = Controller()
+        self.controller.add_state('SplashScreen',
+                                  SplashScreen(controller=self.controller))
+        self.controller.add_state('ExitScreen',
+                                  ExitScreen(controller=self.controller))
+        self.controller.add_state('PlataformerGame',
+                                  PlatformerGame(controller=self.controller))
+
+        self.controller.change_state('SplashScreen')
 
     def run(self):
-        while True:
-            self.load_level(self.sprite_groups)
-            self.get_events()
-            self.render()
+        while self.running:
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    self.running = False
 
-    def get_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+            self.controller.update(events)
+            self.controller.draw(self.screen)
 
-    def render(self):
-        self.screen.fill("skyblue")
-        self.sprite_groups['tiles'].draw(self.screen)
-        self.sprite_groups['objects'].draw(self.screen)
+            if self.controller.exit:
+                self.running = False
 
-        pygame.display.update()
+            pygame.display.flip()
+            self.clock.tick(60)
 
-    def load_level(self, sprite_groups):
-        tmx_data = load_pygame('../misc/tiled/example_levels/testing-1.tmx')
-
-        for layer in tmx_data.visible_layers:
-            if hasattr(layer, 'data'):
-                for x, y, surface in layer.tiles():
-                    pos = (x * TILE_WIDTH, y * TILE_HEIGHT)
-                    Tile(pos=pos, surface=surface,
-                         groups=sprite_groups['tiles'])
-
-        for obj in tmx_data.objects:
-            pos = obj.x, obj.y
-            if obj.image:
-                Sprite(pos=pos, surface=obj.image,
-                       groups=sprite_groups['objects'])
+        pygame.quit()
+        sys.exit()
 
 
 if __name__ == '__main__':
