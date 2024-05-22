@@ -1,7 +1,7 @@
 import pygame
 from pytmx.util_pygame import load_pygame
 
-from settings import WHITE, BLACK, SCREEN_WIDTH, SCREEN_HEIGHT, TILE_WIDTH, TILE_HEIGHT
+from settings import WHITE, BLACK, GAME_WIDTH, GAME_HEIGHT, TILE_WIDTH, TILE_HEIGHT
 from sprites import Sprite, Tile
 
 
@@ -52,7 +52,7 @@ class SplashScreen(GameState):
         super().__init__(controller)
         self.font = pygame.font.Font(None, 74)
         self.text = self.font.render('Splash Screen', True, WHITE)
-        self.text_rect = self.text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        self.text_rect = self.text.get_rect(center=(GAME_WIDTH // 2, GAME_HEIGHT // 2))
 
     def update(self, events):
         for event in events:
@@ -69,7 +69,7 @@ class ExitScreen(GameState):
         super().__init__(controller)
         self.font = pygame.font.Font(None, 74)
         self.text = self.font.render('Exit Screen', True, BLACK)
-        self.text_rect = self.text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        self.text_rect = self.text.get_rect(center=(GAME_WIDTH // 2, GAME_HEIGHT // 2))
 
     def update(self, events):
         for event in events:

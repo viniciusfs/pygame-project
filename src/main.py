@@ -1,7 +1,7 @@
 import sys
 import pygame
 
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_WIDTH, GAME_HEIGHT
 from states import Controller, SplashScreen, ExitScreen, PlatformerGame
 
 
@@ -11,6 +11,7 @@ class Game():
         pygame.display.set_caption("The Mini Games Project")
 
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.canvas = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
         self.clock = pygame.time.Clock()
 
         self.running = True
@@ -33,11 +34,15 @@ class Game():
                     self.running = False
 
             self.controller.update(events)
-            self.controller.draw(self.screen)
+            self.controller.draw(self.canvas)
 
             if self.controller.exit:
                 self.running = False
 
+            self.screen.blit(
+                pygame.transform.scale(self.canvas, (SCREEN_WIDTH, SCREEN_HEIGHT)),
+                (0, 0)
+            )
             pygame.display.flip()
             self.clock.tick(60)
 
