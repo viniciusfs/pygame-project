@@ -8,5 +8,6 @@ tasks:
       - python main.py
 
   clean:
+    dir: .
     cmds:
       - find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf
