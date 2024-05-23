@@ -2,7 +2,8 @@ import sys
 import pygame
 
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_WIDTH, GAME_HEIGHT
-from states import Controller, SplashScreen, ExitScreen, PlatformerGame
+from states import Controller, SplashScreen, ExitScreen
+from platformer import PlatformerGame
 
 
 class Game():
