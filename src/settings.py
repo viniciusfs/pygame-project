@@ -1,3 +1,5 @@
+import os
+
 GAME_WIDTH = 468
 GAME_HEIGHT = 270
 SCREEN_WIDTH = GAME_WIDTH * 2
@@ -9,3 +11,7 @@ TILES_Y = 15
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+
+ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+GRAPHICS_DIR = os.path.join(ROOT_DIR, 'data/graphics')
+TILED_DIR = os.path.join(ROOT_DIR, 'misc/tiled')

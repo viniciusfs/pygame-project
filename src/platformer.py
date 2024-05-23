@@ -1,7 +1,8 @@
 import pygame
 from pytmx.util_pygame import load_pygame
+from os.path import join
 
-from settings import TILE_SIZE
+from settings import TILE_SIZE, TILED_DIR
 from states import GameState
 from sprites import Sprite, Tile
 
@@ -15,7 +16,7 @@ class PlatformerGame(GameState):
             'objects': pygame.sprite.Group()
         }
 
-        tmx_data = load_pygame('../misc/tiled/example_levels/testing-1.tmx')
+        tmx_data = load_pygame(join(TILED_DIR, 'example_levels/testing-1.tmx'))
 
         for layer in tmx_data.visible_layers:
             if hasattr(layer, 'data'):
