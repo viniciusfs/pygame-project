@@ -4,10 +4,9 @@ from settings import vector
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, collision_group):
+    def __init__(self, pos, groups, collision_group, image):
         super().__init__(groups)
-        self.image = pygame.Surface((16, 18))
-        self.image.fill('red')
+        self.image = image
         self.rect = self.image.get_frect(topleft=pos)
         self.old_rect = self.rect.copy()
 
