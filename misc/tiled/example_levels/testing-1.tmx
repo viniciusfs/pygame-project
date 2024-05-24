@@ -30,7 +30,6 @@
   <object id="8" name="coin" type="Coin" gid="152" x="288" y="126" width="18" height="18"/>
   <object id="9" name="coin" type="Coin" gid="152" x="306" y="126" width="18" height="18"/>
   <object id="10" name="key" type="Key" gid="28" x="0" y="54" width="18" height="18"/>
-  <object id="12" name="exclamation_block" type="ExclamationBlock" gid="11" x="360" y="162" width="18" height="18"/>
   <object id="20" name="coin" type="Coin" gid="152" x="342" y="198" width="18" height="18"/>
   <object id="21" name="coin" type="Coin" gid="152" x="360" y="198" width="18" height="18"/>
   <object id="22" name="coin" type="Coin" gid="152" x="378" y="198" width="18" height="18"/>
