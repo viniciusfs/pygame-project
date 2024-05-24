@@ -87,8 +87,8 @@ class PlatformerGame(GameState):
                 if obj.name == 'coin':
                     AnimatedSprite(
                         pos=(obj.x, obj.y),
-                        surface=self.assets['coin'],
                         groups=(sprite_groups['coins'], sprite_groups['all']),
+                        hitbox_offset=(-6, -6),
                         frames=self.assets['coin'],
                         animation_speed=5
                     )
@@ -108,12 +108,11 @@ class PlatformerGame(GameState):
                                      frames=self.assets['player'])
 
     def coin_collision(self):
-        collisions = pygame.sprite.spritecollide(self.player,
-                                                 self.sprite_groups['coins'],
-                                                 True)
-        if collisions:
-            self.stats['coins'] += 1
-            self.stats['score'] += 10
-            print("Player captured a coin. {'coins': %d, 'score': %d}" % (
-                self.stats['coins'], self.stats['score'])
-            )
+        for coin in self.sprite_groups['coins']:
+            if coin.hitbox_rect.colliderect(self.player.hitbox_rect):
+                self.stats['coins'] += 1
+                self.stats['score'] += 10
+                print("Player captured a coin. {'coins': %d, 'score': %d}" % (
+                    self.stats['coins'], self.stats['score'])
+                )
+                coin.kill()
