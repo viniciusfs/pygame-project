@@ -43,7 +43,7 @@ class PlatformerGame(GameState):
             'tilemap-characters_packed.png',
             (24, 24),
             [(0, 0), (0, 1)]
-        )[0]
+        )
 
         self.assets['coin'] = load_sprite_sheet(
             'tilemap_packed.png',
@@ -102,7 +102,7 @@ class PlatformerGame(GameState):
                 self.player = Player(pos=(obj.x, obj.y),
                                      groups=sprite_groups['all'],
                                      collision_group=sprite_groups['collision'],
-                                     image=self.assets['player'])
+                                     frames=self.assets['player'])
 
     def item_collision(self):
         collisions = pygame.sprite.spritecollide(self.player,

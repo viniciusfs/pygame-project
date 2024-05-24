@@ -4,21 +4,32 @@ from settings import vector
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, collision_group, image):
+    def __init__(self, pos, groups, collision_group, frames):
         super().__init__(groups)
-        self.image = image
+        self.frames = frames
+        self.frame_index = 0
+        self.image = self.frames[self.frame_index]
         self.rect = self.image.get_frect(topleft=pos)
         self.old_rect = self.rect.copy()
 
+        self.animation_speed = 5
         self.direction = vector()
-        self.speed = 200
-        self.gravity = 400
+        self.speed = 150
+        self.gravity = 1200
         self.jumping = False
-        self.jump_height = 200
+        self.jump_height = 400
+
+        self.facing_left = True
 
         self.collision_group = collision_group
         self.on_surface = False
 
+    def update(self, dt):
+        self.old_rect = self.rect.copy()
+        self.input()
+        self.move(dt)
+        self.check_on_surface()
+        self.animate(dt)
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -26,8 +37,11 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_RIGHT]:
             input_vector.x += 1
+            self.facing_left = False
+
         if keys[pygame.K_LEFT]:
             input_vector.x -= 1
+            self.facing_left = True
 
         self.direction.x = input_vector.normalize().x if input_vector else input_vector.x
 
@@ -74,8 +88,7 @@ class Player(pygame.sprite.Sprite):
 
                     self.direction.y = 0
 
-    def update(self, dt):
-        self.old_rect = self.rect.copy()
-        self.input()
-        self.move(dt)
-        self.check_on_surface()
+    def animate(self, dt):
+        self.frame_index += self.animation_speed * dt
+        self.image = self.frames[int(self.frame_index % len(self.frames))]
+        self.image = self.image if self.facing_left else pygame.transform.flip(self.image, True, False)
