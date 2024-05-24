@@ -28,13 +28,13 @@ class Game():
         self.canvas = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
         self.clock = pygame.time.Clock()
 
-        self.running = True
-
         self.controller = Controller()
         self.controller.add_state('SplashScreen', SplashScreen(controller=self.controller))
         self.controller.add_state('ExitScreen', ExitScreen(controller=self.controller))
         self.controller.add_state('PlataformerGame', PlatformerGame(controller=self.controller))
         self.controller.change_state('SplashScreen')
+
+        self.running = True
 
     def run(self):
         """
