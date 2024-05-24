@@ -19,9 +19,9 @@ class Controller:
         self.current_state = self.states[name]
         self.current_state.enter()
 
-    def update(self, events):
+    def update(self, dt, events):
         if self.current_state:
-            self.current_state.update(events)
+            self.current_state.update(dt, events)
 
     def draw(self, screen):
         if self.current_state:
@@ -52,7 +52,7 @@ class SplashScreen(GameState):
         self.text = self.font.render('Splash Screen', True, WHITE)
         self.text_rect = self.text.get_rect(center=(GAME_WIDTH // 2, GAME_HEIGHT // 2))
 
-    def update(self, events):
+    def update(self, dt, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 self.controller.change_state('PlataformerGame')
@@ -69,7 +69,7 @@ class ExitScreen(GameState):
         self.text = self.font.render('Exit Screen', True, BLACK)
         self.text_rect = self.text.get_rect(center=(GAME_WIDTH // 2, GAME_HEIGHT // 2))
 
-    def update(self, events):
+    def update(self, dt, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 self.controller.exit = True

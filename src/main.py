@@ -7,7 +7,20 @@ from platformer import PlatformerGame
 
 
 class Game():
+    """
+    Main game class that initializes and runs the game loop.
+
+    Attributes:
+        screen: The main display surface.
+        canvas: The surface where the game is drawn before scaling to the screen.
+        clock: The game clock for controlling the frame rate.
+        running: A flag to indicate if the game is running or not.
+        controller: The game state controller managing the different game states.
+    """
     def __init__(self):
+        """
+        Initializes the game, sets up the display and prepare the game states.
+        """
         pygame.init()
         pygame.display.set_caption("The Mini Games Project")
 
@@ -18,23 +31,26 @@ class Game():
         self.running = True
 
         self.controller = Controller()
-        self.controller.add_state('SplashScreen',
-                                  SplashScreen(controller=self.controller))
-        self.controller.add_state('ExitScreen',
-                                  ExitScreen(controller=self.controller))
-        self.controller.add_state('PlataformerGame',
-                                  PlatformerGame(controller=self.controller))
-
+        self.controller.add_state('SplashScreen', SplashScreen(controller=self.controller))
+        self.controller.add_state('ExitScreen', ExitScreen(controller=self.controller))
+        self.controller.add_state('PlataformerGame', PlatformerGame(controller=self.controller))
         self.controller.change_state('SplashScreen')
 
     def run(self):
+        """
+        Starts the game loop, get events, update current state and render
+        the game window.
+        """
         while self.running:
+            dt = self.clock.tick() / 1000
+
             events = pygame.event.get()
+
             for event in events:
                 if event.type == pygame.QUIT:
                     self.running = False
 
-            self.controller.update(events)
+            self.controller.update(dt, events)
             self.controller.draw(self.canvas)
 
             if self.controller.exit:
@@ -45,7 +61,6 @@ class Game():
                 (0, 0)
             )
             pygame.display.flip()
-            self.clock.tick(60)
 
         pygame.quit()
         sys.exit()

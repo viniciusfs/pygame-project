@@ -1,5 +1,8 @@
 import os
 
+from pygame.math import Vector2 as vector
+
+
 GAME_WIDTH = 468
 GAME_HEIGHT = 270
 SCREEN_WIDTH = GAME_WIDTH * 2
