@@ -4,7 +4,7 @@ from os.path import join
 
 from settings import TILE_SIZE, TILED_DIR
 from states import GameState
-from sprites import Sprite, Tile
+from sprites import Sprite, Tile, AnimatedSprite
 from player import Player
 from loaders import load_sprite_sheet
 
@@ -49,7 +49,7 @@ class PlatformerGame(GameState):
             'tilemap_packed.png',
             (18, 18),
             [(7, 11), (7, 12)]
-        )[0]
+        )
 
     def load_map(self, filename, sprite_groups):
         tmx_data = load_pygame(join(TILED_DIR, filename))
@@ -82,10 +82,12 @@ class PlatformerGame(GameState):
         for obj in tmx_data.get_layer_by_name('items'):
             if obj.image:
                 if obj.name == 'coin':
-                    Sprite(
+                    AnimatedSprite(
                         pos=(obj.x, obj.y),
                         surface=self.assets['coin'],
-                        groups=(sprite_groups['items'], sprite_groups['all'])
+                        groups=(sprite_groups['items'], sprite_groups['all']),
+                        frames=self.assets['coin'],
+                        animation_speed=5
                     )
                 else:
                     Sprite(
@@ -106,4 +108,5 @@ class PlatformerGame(GameState):
         collisions = pygame.sprite.spritecollide(self.player,
                                                  self.sprite_groups['items'],
                                                  True)
-        print(collisions)
+        if collisions:
+            print("Player captured a coin.")
