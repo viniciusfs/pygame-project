@@ -47,6 +47,15 @@ class Player(pygame.sprite.Sprite):
                     # right
                     if (self.rect.right >= sprite.rect.left and int(self.old_rect.right) <= int(sprite.old_rect.left)):
                         self.rect.right = sprite.rect.left
+                elif axis == 'vertical':
+                    # top
+                    if (self.rect.top <= sprite.rect.bottom and int(self.old_rect.top) >= int(sprite.old_rect.bottom)):
+                        self.rect.top = sprite.rect.bottom
+                    # bottom
+                    if (self.rect.bottom >= sprite.rect.top and int(self.old_rect.bottom) <= int(sprite.old_rect.top)):
+                        self.rect.bottom = sprite.rect.top
+
+                    self.direction.y = 0
 
     def update(self, dt):
         self.old_rect = self.rect.copy()
