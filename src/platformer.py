@@ -14,6 +14,7 @@ class PlatformerGame(GameState):
 
         self.sprite_groups = {
             'all': pygame.sprite.Group(),
+            'items': pygame.sprite.Group(),
             'collision': pygame.sprite.Group()
         }
 
@@ -53,7 +54,7 @@ class PlatformerGame(GameState):
                 Sprite(
                     pos=(obj.x, obj.y),
                     surface=obj.image,
-                    groups=(sprite_groups['collision'], sprite_groups['all'])
+                    groups=(sprite_groups['items'], sprite_groups['all'])
                 )
 
         # player
