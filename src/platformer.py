@@ -18,8 +18,11 @@ class PlatformerGame(GameState):
         self.sprite_groups = {
             'all': pygame.sprite.Group(),
             'items': pygame.sprite.Group(),
-            'collision': pygame.sprite.Group()
+            'coins': pygame.sprite.Group(),
+            'terrain': pygame.sprite.Group()
         }
+
+        self.stats = {'coins': 0, 'score': 0}
 
     def enter(self):
         self.load_assets()
@@ -32,7 +35,7 @@ class PlatformerGame(GameState):
                     self.controller.change_state('ExitScreen')
 
         self.sprite_groups['all'].update(dt)
-        self.item_collision()
+        self.coin_collision()
 
     def draw(self, screen):
         screen.fill("skyblue")
@@ -59,7 +62,7 @@ class PlatformerGame(GameState):
             Tile(
                 pos=(x * TILE_SIZE, y * TILE_SIZE),
                 surface=surface,
-                groups=(sprite_groups['collision'], sprite_groups['all'])
+                groups=(sprite_groups['terrain'], sprite_groups['all'])
             )
 
         # background tiles
@@ -85,7 +88,7 @@ class PlatformerGame(GameState):
                     AnimatedSprite(
                         pos=(obj.x, obj.y),
                         surface=self.assets['coin'],
-                        groups=(sprite_groups['items'], sprite_groups['all']),
+                        groups=(sprite_groups['coins'], sprite_groups['all']),
                         frames=self.assets['coin'],
                         animation_speed=5
                     )
@@ -101,12 +104,16 @@ class PlatformerGame(GameState):
             if obj.name == 'player':
                 self.player = Player(pos=(obj.x, obj.y),
                                      groups=sprite_groups['all'],
-                                     collision_group=sprite_groups['collision'],
+                                     collision_group=sprite_groups['terrain'],
                                      frames=self.assets['player'])
 
-    def item_collision(self):
+    def coin_collision(self):
         collisions = pygame.sprite.spritecollide(self.player,
-                                                 self.sprite_groups['items'],
+                                                 self.sprite_groups['coins'],
                                                  True)
         if collisions:
-            print("Player captured a coin.")
+            self.stats['coins'] += 1
+            self.stats['score'] += 10
+            print("Player captured a coin. {'coins': %d, 'score': %d}" % (
+                self.stats['coins'], self.stats['score'])
+            )
