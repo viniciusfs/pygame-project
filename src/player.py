@@ -14,8 +14,12 @@ class Player(pygame.sprite.Sprite):
         self.direction = vector()
         self.speed = 200
         self.gravity = 400
+        self.jumping = False
+        self.jump_height = 200
 
         self.collision_group = collision_group
+        self.on_surface = False
+
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -28,6 +32,9 @@ class Player(pygame.sprite.Sprite):
 
         self.direction.x = input_vector.normalize().x if input_vector else input_vector.x
 
+        if keys[pygame.K_SPACE]:
+            self.jumping = True
+
     def move(self, dt):
         self.rect.x += self.direction.x * self.speed * dt
         self.collision('horizontal')
@@ -36,6 +43,17 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.direction.y * dt
         self.direction.y += self.gravity / 2 * dt
         self.collision('vertical')
+
+        if self.jumping:
+            if self.on_surface:
+                self.direction.y = -self.jump_height
+
+            self.jumping = False
+
+    def check_on_surface(self):
+        floor_rect = pygame.Rect(self.rect.bottomleft, (self.rect.width, 2))
+        collide_rects = [sprite.rect for sprite in self.collision_group]
+        self.on_surface = True if floor_rect.collidelist(collide_rects) >= 0 else False
 
     def collision(self, axis):
         for sprite in self.collision_group:
@@ -61,3 +79,4 @@ class Player(pygame.sprite.Sprite):
         self.old_rect = self.rect.copy()
         self.input()
         self.move(dt)
+        self.check_on_surface()
