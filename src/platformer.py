@@ -19,6 +19,7 @@ class PlatformerGame(GameState):
             'all': pygame.sprite.Group(),
             'items': pygame.sprite.Group(),
             'coins': pygame.sprite.Group(),
+            'keys': pygame.sprite.Group(),
             'terrain': pygame.sprite.Group()
         }
 
@@ -115,6 +116,12 @@ class PlatformerGame(GameState):
                         frames=self.assets['coin'],
                         animation_speed=5
                     )
+                elif obj.name == 'key':
+                    Sprite(
+                        pos=(obj.x, obj.y),
+                        surface=obj.image,
+                        groups=(sprite_groups['keys'], sprite_groups['all'])
+                    )
                 else:
                     Sprite(
                         pos=(obj.x, obj.y),
@@ -131,16 +138,17 @@ class PlatformerGame(GameState):
                                      frames=self.assets['player'])
 
     def item_collision(self):
-        collision = pygame.sprite.spritecollide(self.player,
-                                                self.sprite_groups['items'],
-                                                True)
-        if collision:
-            self.stats['score'] += 100
+        # collision with keys
+        for key in self.sprite_groups['keys']:
+            if key.rect.colliderect(self.player.hitbox_rect):
+                self.stats['score'] += 100
 
-            print("Player captured a key. {'coins': %d, 'score': %d}" % (
-                self.stats['coins'], self.stats['score'])
-            )
+                print("Player captured a key. {'coins': %d, 'score': %d}" % (
+                    self.stats['coins'], self.stats['score'])
+                )
+                key.kill()
 
+        # collision with coins
         for coin in self.sprite_groups['coins']:
             if coin.hitbox_rect.colliderect(self.player.hitbox_rect):
                 self.stats['coins'] += 1
@@ -151,6 +159,7 @@ class PlatformerGame(GameState):
                 )
                 coin.kill()
 
+        # collision with checkpoint
         if pygame.Rect.colliderect(self.checkpoint_rect,
                                    self.player.hitbox_rect):
             print("Player reached a checkpoint!")
