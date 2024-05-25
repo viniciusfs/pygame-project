@@ -22,11 +22,18 @@ class PlatformerGame(GameState):
             'terrain': pygame.sprite.Group()
         }
 
+        self.levels = {
+            1: 'example_levels/testing-1.tmx',
+            2: 'example_levels/testing-2.tmx',
+            3: 'example_levels/testing-3.tmx'
+        }
+        self.current_level = 1
+
         self.stats = {'coins': 0, 'score': 0}
 
     def enter(self):
         self.load_assets()
-        self.load_map('example_levels/testing-1.tmx', self.sprite_groups)
+        self.load_map(self.levels[self.current_level], self.sprite_groups)
 
     def update(self, dt, events):
         for event in events:
@@ -35,11 +42,21 @@ class PlatformerGame(GameState):
                     self.controller.change_state('ExitScreen')
 
         self.sprite_groups['all'].update(dt)
-        self.coin_collision()
+        self.item_collision()
 
     def draw(self, screen):
         screen.fill("skyblue")
         self.sprite_groups['all'].draw(screen)
+
+    def change_level(self):
+        for group in self.sprite_groups.values():
+            group.empty()
+
+        self.current_level += 1
+        if self.current_level > len(self.levels):
+            self.current_level = 1
+
+        self.load_map(self.levels[self.current_level], self.sprite_groups)
 
     def load_assets(self):
         self.assets['player'] = load_sprite_sheet(
@@ -83,6 +100,12 @@ class PlatformerGame(GameState):
 
         # items objects
         for obj in tmx_data.get_layer_by_name('items'):
+            if obj.name == 'checkpoint':
+                self.checkpoint_rect = pygame.Rect(obj.x,
+                                                   obj.y,
+                                                   obj.width,
+                                                   obj.height)
+
             if obj.image:
                 if obj.name == 'coin':
                     AnimatedSprite(
@@ -107,12 +130,28 @@ class PlatformerGame(GameState):
                                      collision_group=sprite_groups['terrain'],
                                      frames=self.assets['player'])
 
-    def coin_collision(self):
+    def item_collision(self):
+        collision = pygame.sprite.spritecollide(self.player,
+                                                self.sprite_groups['items'],
+                                                True)
+        if collision:
+            self.stats['score'] += 100
+
+            print("Player captured a key. {'coins': %d, 'score': %d}" % (
+                self.stats['coins'], self.stats['score'])
+            )
+
         for coin in self.sprite_groups['coins']:
             if coin.hitbox_rect.colliderect(self.player.hitbox_rect):
                 self.stats['coins'] += 1
                 self.stats['score'] += 10
+
                 print("Player captured a coin. {'coins': %d, 'score': %d}" % (
                     self.stats['coins'], self.stats['score'])
                 )
                 coin.kill()
+
+        if pygame.Rect.colliderect(self.checkpoint_rect,
+                                   self.player.hitbox_rect):
+            print("Player reached a checkpoint!")
+            self.change_level()
