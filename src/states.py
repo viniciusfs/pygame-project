@@ -50,7 +50,8 @@ class SplashScreen(GameState):
         super().__init__(controller)
         self.font = pygame.font.Font(None, 74)
         self.text = self.font.render('Splash Screen', True, WHITE)
-        self.text_rect = self.text.get_rect(center=(GAME_WIDTH // 2, GAME_HEIGHT // 2))
+        self.text_rect = self.text.get_rect(center=(GAME_WIDTH // 2,
+                                                    GAME_HEIGHT // 2))
 
     def update(self, dt, events):
         for event in events:
@@ -67,12 +68,17 @@ class ExitScreen(GameState):
         super().__init__(controller)
         self.font = pygame.font.Font(None, 74)
         self.text = self.font.render('Exit Screen', True, BLACK)
-        self.text_rect = self.text.get_rect(center=(GAME_WIDTH // 2, GAME_HEIGHT // 2))
+        self.text_rect = self.text.get_rect(center=(GAME_WIDTH // 2,
+                                                    GAME_HEIGHT // 2))
+
+    def enter(self):
+        self.end_time = pygame.time.get_ticks() + 1500
 
     def update(self, dt, events):
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                self.controller.exit = True
+        current_time = pygame.time.get_ticks()
+
+        if current_time > self.end_time:
+            self.controller.exit = True
 
     def draw(self, screen):
         screen.fill(WHITE)
