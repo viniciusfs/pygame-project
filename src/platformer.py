@@ -60,11 +60,20 @@ class PlatformerGame(GameState):
         self.load_map(self.levels[self.current_level], self.sprite_groups)
 
     def load_assets(self):
-        self.assets['player'] = load_sprite_sheet(
+        player_walking = load_sprite_sheet(
             'tilemap-characters_packed.png',
             (24, 24),
             [(0, 0), (0, 1)]
         )
+
+        player_idle = [player_walking[0]]
+        player_jumping = [player_walking[0]]
+        player_falling = [player_walking[1]]
+
+        self.assets['player'] = { 'idle': player_idle,
+                                  'jumping': player_jumping,
+                                  'falling': player_falling,
+                                  'walking': player_walking }
 
         self.assets['coin'] = load_sprite_sheet(
             'tilemap_packed.png',
@@ -77,6 +86,8 @@ class PlatformerGame(GameState):
             (18, 18),
             [(5, 11), (5, 12)]
         )
+
+        print(self.assets)
 
     def load_map(self, filename, sprite_groups):
         tmx_data = load_pygame(join(TILED_DIR, filename))

@@ -7,9 +7,11 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, collision_group, frames):
         super().__init__(groups)
 
+        self.state = 'idle'
+
         self.frames = frames
         self.frame_index = 0
-        self.image = self.frames[self.frame_index]
+        self.image = self.frames[self.state][self.frame_index]
 
         self.rect = self.image.get_frect(topleft=pos)
         self.hitbox_rect = self.rect.inflate(-10, 0)
@@ -22,7 +24,7 @@ class Player(pygame.sprite.Sprite):
 
         self.facing_left = True
 
-        self.jumping = False
+        self.jump_key = False
         self.jump_height = 400
 
         self.collision_group = collision_group
@@ -50,9 +52,17 @@ class Player(pygame.sprite.Sprite):
         self.direction.x = input_vector.normalize().x if input_vector else input_vector.x
 
         if keys[pygame.K_SPACE]:
-            self.jumping = True
+            self.jump_key = True
+
+        print(self.state)
 
     def move(self, dt):
+        if self.jump_key:
+            if self.on_surface:
+                self.direction.y = -self.jump_height
+
+            self.jump_key = False
+
         self.hitbox_rect.x += self.direction.x * self.speed * dt
         self.collision('horizontal')
 
@@ -61,11 +71,17 @@ class Player(pygame.sprite.Sprite):
         self.direction.y += self.gravity / 2 * dt
         self.collision('vertical')
 
-        if self.jumping:
-            if self.on_surface:
-                self.direction.y = -self.jump_height
+        if self.on_surface and (self.direction.x == 0) and (self.direction.y == 0):
+            self.state = 'idle'
 
-            self.jumping = False
+        if self.on_surface and (self.direction.x != 0) and (self.direction.y == 0):
+            self.state = 'walking'
+
+        if not self.on_surface and (self.direction.y > 0):
+            self.state = 'falling'
+
+        if not self.on_surface and (self.direction.y < 0):
+            self.state = 'jumping'
 
         self.rect.center = self.hitbox_rect.center
 
@@ -96,5 +112,6 @@ class Player(pygame.sprite.Sprite):
 
     def animate(self, dt):
         self.frame_index += self.animation_speed * dt
-        self.image = self.frames[int(self.frame_index % len(self.frames))]
+        self.image = self.frames[self.state][int(self.frame_index %
+                                                 len(self.frames[self.state]))]
         self.image = self.image if self.facing_left else pygame.transform.flip(self.image, True, False)
