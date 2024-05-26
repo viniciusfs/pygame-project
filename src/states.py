@@ -56,7 +56,7 @@ class SplashScreen(GameState):
     def update(self, dt, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
-                self.controller.change_state('PlataformerGame')
+                self.controller.change_state('PlatformerGame')
 
     def draw(self, screen):
         screen.fill(BLACK)
