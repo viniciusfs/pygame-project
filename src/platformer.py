@@ -72,6 +72,12 @@ class PlatformerGame(GameState):
             [(7, 11), (7, 12)]
         )
 
+        self.assets['flag'] = load_sprite_sheet(
+            'tilemap_packed.png',
+            (18, 18),
+            [(5, 11), (5, 12)]
+        )
+
     def load_map(self, filename, sprite_groups):
         tmx_data = load_pygame(join(TILED_DIR, filename))
 
@@ -98,6 +104,17 @@ class PlatformerGame(GameState):
                 surface=surface,
                 groups=(sprite_groups['all'])
             )
+
+        # animated background
+        for obj in tmx_data.get_layer_by_name('animated_bg'):
+            if obj.name == 'flag':
+                AnimatedSprite(
+                    pos=(obj.x, obj.y),
+                    groups=(sprite_groups['all']),
+                    hitbox_offset=(0, 0),
+                    frames=self.assets['flag'],
+                    animation_speed=2
+                )
 
         # items objects
         for obj in tmx_data.get_layer_by_name('items'):
