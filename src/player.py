@@ -1,6 +1,6 @@
 import pygame
 
-from settings import vector
+from pygame.math import Vector2 as vector
 
 
 class Player(pygame.sprite.Sprite):
@@ -53,8 +53,6 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_SPACE]:
             self.jump_key = True
-
-        print(self.state)
 
     def move(self, dt):
         if self.jump_key:

@@ -2,11 +2,12 @@ import pygame
 from pytmx.util_pygame import load_pygame
 from os.path import join
 
-from settings import TILE_SIZE, TILED_DIR
+from settings import TILE_SIZE, TILED_DIR, DEBUG_FONT
 from states import GameState
 from sprites import Sprite, Tile, AnimatedSprite
 from player import Player
 from loaders import load_sprite_sheet
+from debug import debug
 
 
 class PlatformerGame(GameState):
@@ -49,6 +50,9 @@ class PlatformerGame(GameState):
         screen.fill("skyblue")
         self.sprite_groups['all'].draw(screen)
 
+        debug(self.stats, (10, 10), screen, DEBUG_FONT)
+        debug(self.player.state, (10, 20), screen, DEBUG_FONT)
+
     def change_level(self):
         for group in self.sprite_groups.values():
             group.empty()
@@ -86,8 +90,6 @@ class PlatformerGame(GameState):
             (18, 18),
             [(5, 11), (5, 12)]
         )
-
-        print(self.assets)
 
     def load_map(self, filename, sprite_groups):
         tmx_data = load_pygame(join(TILED_DIR, filename))
@@ -170,10 +172,6 @@ class PlatformerGame(GameState):
         for key in self.sprite_groups['keys']:
             if key.rect.colliderect(self.player.hitbox_rect):
                 self.stats['score'] += 100
-
-                print("Player captured a key. {'coins': %d, 'score': %d}" % (
-                    self.stats['coins'], self.stats['score'])
-                )
                 key.kill()
 
         # collision with coins
@@ -181,14 +179,9 @@ class PlatformerGame(GameState):
             if coin.hitbox_rect.colliderect(self.player.hitbox_rect):
                 self.stats['coins'] += 1
                 self.stats['score'] += 10
-
-                print("Player captured a coin. {'coins': %d, 'score': %d}" % (
-                    self.stats['coins'], self.stats['score'])
-                )
                 coin.kill()
 
         # collision with checkpoint
         if pygame.Rect.colliderect(self.checkpoint_rect,
                                    self.player.hitbox_rect):
-            print("Player reached a checkpoint!")
             self.change_level()

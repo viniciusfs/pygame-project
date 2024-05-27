@@ -1,20 +1,22 @@
 import os
+import pygame
 
-from pygame.math import Vector2 as vector
-
-
-GAME_WIDTH = 468
-GAME_HEIGHT = 270
-SCREEN_WIDTH = GAME_WIDTH * 2
-SCREEN_HEIGHT = GAME_HEIGHT * 2
 
 TILE_SIZE = 18
 TILES_X = 26
 TILES_Y = 15
-
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
+GAME_WIDTH = TILES_X * TILE_SIZE
+GAME_HEIGHT = TILES_Y * TILE_SIZE
+SCREEN_WIDTH = GAME_WIDTH * 2
+SCREEN_HEIGHT = GAME_HEIGHT * 2
 
 ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 GRAPHICS_DIR = os.path.join(ROOT_DIR, 'data/graphics')
 TILED_DIR = os.path.join(ROOT_DIR, 'misc/tiled')
+FONTS_DIR = os.path.join(ROOT_DIR, 'data/fonts')
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+pygame.font.init()
+DEBUG_FONT = pygame.font.Font(os.path.join(FONTS_DIR, 'grand9k-pixel.ttf'), 8)
