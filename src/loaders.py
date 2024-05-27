@@ -59,7 +59,9 @@ def load_sprite_sheet(file, sprite_dimensions, positions=None):
 
     Loading sprites from specific positions:
 
-    >>> sprites = load_sprite_sheet('path/to/image.png', (24, 24), [(1,2), (1,3)])
+    >>> sprites = load_sprite_sheet('path/to/image.png',
+                                    (24, 24),
+                                    [(1,2), (1,3)])
     """
     full_path = join(GRAPHICS_DIR, file)
     sprite_sheet = pygame.image.load(full_path).convert_alpha()
@@ -78,7 +80,9 @@ def load_sprite_sheet(file, sprite_dimensions, positions=None):
     else:
         for y in range(0, sheet_height, sprite_dimensions[1]):
             for x in range(0, sheet_width, sprite_dimensions[0]):
-                rect = pygame.Rect(x, y, sprite_dimensions[0], sprite_dimensions[1])
+                rect = pygame.Rect(x, y,
+                                   sprite_dimensions[0],
+                                   sprite_dimensions[1])
                 sprite = sprite_sheet.subsurface(rect)
                 sprites.append(sprite)
 

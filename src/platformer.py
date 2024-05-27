@@ -74,10 +74,10 @@ class PlatformerGame(GameState):
         player_jumping = [player_walking[0]]
         player_falling = [player_walking[1]]
 
-        self.assets['player'] = { 'idle': player_idle,
-                                  'jumping': player_jumping,
-                                  'falling': player_falling,
-                                  'walking': player_walking }
+        self.assets['player'] = {'idle': player_idle,
+                                 'jumping': player_jumping,
+                                 'falling': player_falling,
+                                 'walking': player_walking}
 
         self.assets['coin'] = load_sprite_sheet(
             'tilemap_packed.png',

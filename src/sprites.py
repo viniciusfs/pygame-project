@@ -16,7 +16,12 @@ class Sprite(pygame.sprite.Sprite):
 
 
 class AnimatedSprite(Sprite):
-    def __init__(self, pos, groups, frames, animation_speed, hitbox_offset=None):
+    def __init__(self,
+                 pos,
+                 groups,
+                 frames,
+                 animation_speed,
+                 hitbox_offset=None):
         self.frames = frames
         self.frame_index = 0
         self.hitbox_offset = hitbox_offset if hitbox_offset else None

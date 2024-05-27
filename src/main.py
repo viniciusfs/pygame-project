@@ -29,9 +29,12 @@ class Game():
         self.clock = pygame.time.Clock()
 
         self.controller = Controller()
-        self.controller.add_state('SplashScreen', SplashScreen(controller=self.controller))
-        self.controller.add_state('ExitScreen', ExitScreen(controller=self.controller))
-        self.controller.add_state('PlatformerGame', PlatformerGame(controller=self.controller))
+        self.controller.add_state('SplashScreen',
+                                  SplashScreen(controller=self.controller))
+        self.controller.add_state('ExitScreen',
+                                  ExitScreen(controller=self.controller))
+        self.controller.add_state('PlatformerGame',
+                                  PlatformerGame(controller=self.controller))
 
         self.controller.change_state('SplashScreen')
         self.running = True
@@ -58,7 +61,8 @@ class Game():
             self.controller.draw(self.canvas)
 
             self.screen.blit(
-                pygame.transform.scale(self.canvas, (SCREEN_WIDTH, SCREEN_HEIGHT)),
+                pygame.transform.scale(self.canvas, (SCREEN_WIDTH,
+                                                     SCREEN_HEIGHT)),
                 (0, 0)
             )
             pygame.display.flip()

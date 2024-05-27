@@ -69,10 +69,12 @@ class Player(pygame.sprite.Sprite):
         self.direction.y += self.gravity / 2 * dt
         self.collision('vertical')
 
-        if self.on_surface and (self.direction.x == 0) and (self.direction.y == 0):
+        if (self.on_surface and (self.direction.x == 0) and
+                (self.direction.y == 0)):
             self.state = 'idle'
 
-        if self.on_surface and (self.direction.x != 0) and (self.direction.y == 0):
+        if (self.on_surface and (self.direction.x != 0) and
+                (self.direction.y == 0)):
             self.state = 'walking'
 
         if not self.on_surface and (self.direction.y > 0):
@@ -84,7 +86,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = self.hitbox_rect.center
 
     def check_on_surface(self):
-        floor_rect = pygame.Rect(self.hitbox_rect.bottomleft, (self.hitbox_rect.width, 2))
+        floor_rect = pygame.Rect(self.hitbox_rect.bottomleft,
+                                 (self.hitbox_rect.width, 2))
         collide_rects = [sprite.rect for sprite in self.collision_group]
         self.on_surface = True if floor_rect.collidelist(collide_rects) >= 0 else False
 
@@ -93,17 +96,21 @@ class Player(pygame.sprite.Sprite):
             if sprite.rect.colliderect(self.hitbox_rect):
                 if axis == 'horizontal':
                     # left
-                    if (self.hitbox_rect.left <= sprite.rect.right and int(self.old_rect.left) >= int(sprite.old_rect.right)):
+                    if (self.hitbox_rect.left <= sprite.rect.right and
+                            int(self.old_rect.left) >= int(sprite.old_rect.right)):
                         self.hitbox_rect.left = sprite.rect.right
                     # right
-                    if (self.hitbox_rect.right >= sprite.rect.left and int(self.old_rect.right) <= int(sprite.old_rect.left)):
+                    if (self.hitbox_rect.right >= sprite.rect.left and
+                            int(self.old_rect.right) <= int(sprite.old_rect.left)):
                         self.hitbox_rect.right = sprite.rect.left
                 elif axis == 'vertical':
                     # top
-                    if (self.hitbox_rect.top <= sprite.rect.bottom and int(self.old_rect.top) >= int(sprite.old_rect.bottom)):
+                    if (self.hitbox_rect.top <= sprite.rect.bottom and
+                            int(self.old_rect.top) >= int(sprite.old_rect.bottom)):
                         self.hitbox_rect.top = sprite.rect.bottom
                     # bottom
-                    if (self.hitbox_rect.bottom >= sprite.rect.top and int(self.old_rect.bottom) <= int(sprite.old_rect.top)):
+                    if (self.hitbox_rect.bottom >= sprite.rect.top and
+                            int(self.old_rect.bottom) <= int(sprite.old_rect.top)):
                         self.hitbox_rect.bottom = sprite.rect.top
 
                     self.direction.y = 0
