@@ -12,7 +12,7 @@ SCREEN_HEIGHT = GAME_HEIGHT * 2
 
 ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 GRAPHICS_DIR = os.path.join(ROOT_DIR, 'data/graphics')
-TILED_DIR = os.path.join(ROOT_DIR, 'misc/tiled')
+TILED_DIR = os.path.join(ROOT_DIR, 'data/tiled')
 FONTS_DIR = os.path.join(ROOT_DIR, 'data/fonts')
 
 WHITE = (255, 255, 255)
