@@ -13,8 +13,8 @@ class Particle(pygame.sprite.Sprite):
                  speed,
                  size,
                  lifespan,
-                 fade=False,
-                 shrink=False):
+                 fading=False,
+                 shrinking=False):
         super().__init__()
         self.pos = pos
         self.color = color
@@ -22,8 +22,8 @@ class Particle(pygame.sprite.Sprite):
         self.speed = speed
         self.size = size
         self.lifespan = lifespan
-        self.fading = fade
-        self.shrinking = shrink
+        self.fading = fading
+        self.shrinking = shrinking
 
         self.creation_time = pygame.time.get_ticks()
         self.fade_speed = 200
@@ -109,38 +109,69 @@ class GravityParticle(Particle):
         self.rect.center = self.pos
 
 
+class DustEffect(ParticleGroup):
+    def __init__(self):
+        super().__init__(particle_class=GravityParticle)
+
+    def randomize_particle_attributes(self):
+        colors = ["gray", "gray100", "gray60"]
+        directions = [
+            pygame.math.Vector2(0.25, -1),
+            pygame.math.Vector2(0.50, -0.75),
+            pygame.math.Vector2(0.75, -0.50),
+            pygame.math.Vector2(-0.25, -1),
+            pygame.math.Vector2(-0.50, -0.75),
+            pygame.math.Vector2(-0.75, -0.50),
+        ]
+
+        attr_dict = {
+            'size': random.randint(3, 10),
+            'speed': random.randint(50, 100),
+            'color': random.choice(colors),
+            'direction': random.choice(directions),
+            'lifespan': random.randint(500, 1000),
+        }
+
+        return attr_dict
+
+    def emit(self, count, pos, dispersion_width):
+        dispersion_width = dispersion_width
+        leftmost = int(pos[0] - (dispersion_width / 2))
+        rightmost = int(pos[0] + (dispersion_width / 2))
+
+        for _ in range(count):
+            particle_attrs = self.randomize_particle_attributes()
+            particle_x = random.randint(leftmost, rightmost)
+            particle_position = particle_x, pos[1]
+
+            particle = self.particle_class(
+                pos=particle_position,
+                gravity=2.5,
+                fading=True,
+                **particle_attrs
+            )
+            self.add(particle)
+
+
 class TestParticles(GameState):
     def __init__(self, controller):
         super().__init__(controller)
 
-        self.particle_group = ParticleGroup(particle_class=GravityParticle)
+        self.particle_group = DustEffect()
 
     def update(self, dt, events):
+        count = random.randint(5, 15)
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 raw_position = pygame.mouse.get_pos()
                 downscaled_x = raw_position[0] / 2
                 downscaled_y = raw_position[1] / 2
-                pos = downscaled_x + random.randint(-10, 10), downscaled_y + random.randint(-10, 10)  # noqa: E501
-                color = "gray"
-                speed = random.randint(50, 100)
-                size = random.randint(3, 10)
-
-                if event.button == 1:
-                    direction = pygame.math.Vector2(0.5, -0.5)
-                if event.button == 3:
-                    direction = pygame.math.Vector2(-0.5, -0.5)
+                position = downscaled_x, downscaled_y
 
                 self.particle_group.emit(
-                    count=1,
-                    gravity=2.5,
-                    pos=pos,
-                    color=color,
-                    direction=direction,
-                    speed=speed,
-                    size=size,
-                    lifespan=2000,
-                    fade=True
+                    count=count,
+                    pos=position,
+                    dispersion_width=24
                 )
 
         self.particle_group.update(dt)
