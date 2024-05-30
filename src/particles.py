@@ -14,7 +14,9 @@ class Particle(pygame.sprite.Sprite):
                  size,
                  lifespan,
                  fading=False,
-                 shrinking=False):
+                 fade_speed=200,
+                 shrinking=False,
+                 shrink_speed=0):
         super().__init__()
         self.pos = pos
         self.color = color
@@ -23,10 +25,11 @@ class Particle(pygame.sprite.Sprite):
         self.size = size
         self.lifespan = lifespan
         self.fading = fading
+        self.fade_speed = fade_speed
         self.shrinking = shrinking
-
+        self.shrink_speed = shrink_speed
         self.creation_time = pygame.time.get_ticks()
-        self.fade_speed = 200
+
         self.alpha = 255
 
         self.image = pygame.Surface((self.size, self.size)).convert_alpha()
@@ -125,11 +128,12 @@ class DustEffect(ParticleGroup):
         ]
 
         attr_dict = {
-            'size': random.randint(3, 10),
+            'size': random.randint(2, 6),
             'speed': random.randint(50, 100),
             'color': random.choice(colors),
             'direction': random.choice(directions),
             'lifespan': random.randint(500, 1000),
+            'fade_speed': 500
         }
 
         return attr_dict
