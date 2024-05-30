@@ -14,7 +14,8 @@ class Player(pygame.sprite.Sprite):
         self.image = self.frames[self.state][self.frame_index]
 
         self.rect = self.image.get_frect(topleft=pos)
-        self.hitbox_rect = self.rect.inflate(-10, 0)
+        self.hitbox_rect = self.rect.inflate(-10, -3)
+        self.hitbox_rect.midbottom = self.rect.midbottom
         self.old_rect = self.hitbox_rect.copy()
 
         self.direction = vector()
@@ -49,7 +50,7 @@ class Player(pygame.sprite.Sprite):
             input_vector.x -= 1
             self.facing_left = True
 
-        self.direction.x = input_vector.normalize().x if input_vector else input_vector.x
+        self.direction.x = input_vector.normalize().x if input_vector else input_vector.x  # noqa: E501
 
         if keys[pygame.K_SPACE]:
             self.jump_key = True
@@ -83,13 +84,13 @@ class Player(pygame.sprite.Sprite):
         if not self.on_surface and (self.direction.y < 0):
             self.state = 'jumping'
 
-        self.rect.center = self.hitbox_rect.center
+        self.rect.midbottom = self.hitbox_rect.midbottom
 
     def check_on_surface(self):
         floor_rect = pygame.Rect(self.hitbox_rect.bottomleft,
                                  (self.hitbox_rect.width, 2))
         collide_rects = [sprite.rect for sprite in self.collision_group]
-        self.on_surface = True if floor_rect.collidelist(collide_rects) >= 0 else False
+        self.on_surface = True if floor_rect.collidelist(collide_rects) >= 0 else False  # noqa: E501
 
     def collision(self, axis):
         for sprite in self.collision_group:
@@ -97,20 +98,20 @@ class Player(pygame.sprite.Sprite):
                 if axis == 'horizontal':
                     # left
                     if (self.hitbox_rect.left <= sprite.rect.right and
-                            int(self.old_rect.left) >= int(sprite.old_rect.right)):
+                            int(self.old_rect.left) >= int(sprite.old_rect.right)):  # noqa: E501
                         self.hitbox_rect.left = sprite.rect.right
                     # right
                     if (self.hitbox_rect.right >= sprite.rect.left and
-                            int(self.old_rect.right) <= int(sprite.old_rect.left)):
+                            int(self.old_rect.right) <= int(sprite.old_rect.left)):  # noqa: E501
                         self.hitbox_rect.right = sprite.rect.left
                 elif axis == 'vertical':
                     # top
                     if (self.hitbox_rect.top <= sprite.rect.bottom and
-                            int(self.old_rect.top) >= int(sprite.old_rect.bottom)):
+                            int(self.old_rect.top) >= int(sprite.old_rect.bottom)):  # noqa: E501
                         self.hitbox_rect.top = sprite.rect.bottom
                     # bottom
                     if (self.hitbox_rect.bottom >= sprite.rect.top and
-                            int(self.old_rect.bottom) <= int(sprite.old_rect.top)):
+                            int(self.old_rect.bottom) <= int(sprite.old_rect.top)):  # noqa: E501
                         self.hitbox_rect.bottom = sprite.rect.top
 
                     self.direction.y = 0
@@ -119,4 +120,4 @@ class Player(pygame.sprite.Sprite):
         self.frame_index += self.animation_speed * dt
         self.image = self.frames[self.state][int(self.frame_index %
                                                  len(self.frames[self.state]))]
-        self.image = self.image if self.facing_left else pygame.transform.flip(self.image, True, False)
+        self.image = self.image if self.facing_left else pygame.transform.flip(self.image, True, False)  # noqa: E501

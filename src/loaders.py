@@ -22,7 +22,7 @@ def load_image(*path):
     .. code-block:: python
 
         image = load_image('path/to/image.png')
-    """
+    """ # noqa 
     full_path = join(GRAPHICS_DIR, *path)
     image = pygame.image.load(full_path).convert_alpha()
 
