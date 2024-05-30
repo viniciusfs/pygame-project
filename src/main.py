@@ -39,7 +39,7 @@ class Game():
         self.controller.add_state('TestParticles',
                                   TestParticles(controller=self.controller))
 
-        self.controller.change_state('TestParticles')
+        self.controller.change_state('PlatformerGame')
         self.running = True
 
     def run(self):

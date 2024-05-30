@@ -4,7 +4,7 @@ from pygame.math import Vector2 as vector
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, collision_group, frames):
+    def __init__(self, pos, groups, collision_group, frames, particle_emitter):
         super().__init__(groups)
 
         self.state = 'idle'
@@ -31,12 +31,15 @@ class Player(pygame.sprite.Sprite):
         self.collision_group = collision_group
         self.on_surface = False
 
+        self.dust_effect = particle_emitter
+
     def update(self, dt):
         self.old_rect = self.hitbox_rect.copy()
         self.input()
         self.move(dt)
         self.check_on_surface()
         self.animate(dt)
+        self.dust_effect.update(dt)
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -59,6 +62,8 @@ class Player(pygame.sprite.Sprite):
         if self.jump_key:
             if self.on_surface:
                 self.direction.y = -self.jump_height
+                self.dust_effect.emit(count=3, pos=self.hitbox_rect.midbottom,
+                                      dispersion_width=self.hitbox_rect.width)
 
             self.jump_key = False
 

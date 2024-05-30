@@ -7,6 +7,7 @@ from states import GameState
 from sprites import Sprite, Tile, AnimatedSprite
 from player import Player
 from loaders import load_sprite_sheet
+from particles import DustEffect
 from debug import debug
 
 
@@ -21,7 +22,8 @@ class PlatformerGame(GameState):
             'items': pygame.sprite.Group(),
             'coins': pygame.sprite.Group(),
             'keys': pygame.sprite.Group(),
-            'terrain': pygame.sprite.Group()
+            'terrain': pygame.sprite.Group(),
+            'particles': DustEffect(),
         }
 
         self.levels = {
@@ -44,14 +46,17 @@ class PlatformerGame(GameState):
                     self.controller.change_state('ExitScreen')
 
         self.sprite_groups['all'].update(dt)
+        self.sprite_groups['particles'].update(dt)
         self.item_collision()
 
     def draw(self, screen):
         screen.fill("skyblue")
         self.sprite_groups['all'].draw(screen)
+        self.sprite_groups['particles'].draw(screen)
 
         debug(self.stats, (10, 10), screen, DEBUG_FONT)
         debug(self.player.state, (10, 20), screen, DEBUG_FONT)
+        debug(len(self.sprite_groups['particles']), (10, 30), screen, DEBUG_FONT)
 
     def change_level(self):
         for group in self.sprite_groups.values():
@@ -162,10 +167,13 @@ class PlatformerGame(GameState):
         # player
         for obj in tmx_data.get_layer_by_name('player'):
             if obj.name == 'player':
-                self.player = Player(pos=(obj.x, obj.y),
-                                     groups=sprite_groups['all'],
-                                     collision_group=sprite_groups['terrain'],
-                                     frames=self.assets['player'])
+                self.player = Player(
+                              pos=(obj.x, obj.y),
+                              groups=sprite_groups['all'],
+                              collision_group=sprite_groups['terrain'],
+                              frames=self.assets['player'],
+                              particle_emitter=self.sprite_groups['particles']
+                              )
 
     def item_collision(self):
         # collision with keys
