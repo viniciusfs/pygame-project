@@ -4,6 +4,7 @@ import pygame
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_WIDTH, GAME_HEIGHT
 from states import Controller, SplashScreen, ExitScreen
 from platformer import PlatformerGame
+from particles import TestParticles
 
 
 class Game():
@@ -16,7 +17,7 @@ class Game():
         clock: The game clock for controlling the frame rate.
         running: A flag to indicate if the game is running or not.
         controller: The game state controller managing the different game states.
-    """
+    """ # noqa
     def __init__(self):
         """
         Initializes the game, sets up the display and prepare the game states.
@@ -35,8 +36,10 @@ class Game():
                                   ExitScreen(controller=self.controller))
         self.controller.add_state('PlatformerGame',
                                   PlatformerGame(controller=self.controller))
+        self.controller.add_state('TestParticles',
+                                  TestParticles(controller=self.controller))
 
-        self.controller.change_state('SplashScreen')
+        self.controller.change_state('TestParticles')
         self.running = True
 
     def run(self):
