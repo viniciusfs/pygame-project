@@ -8,6 +8,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
 
         self.state = 'idle'
+        self.last_state = self.state
 
         self.frames = frames
         self.frame_index = 0
@@ -59,21 +60,34 @@ class Player(pygame.sprite.Sprite):
             self.jump_key = True
 
     def move(self, dt):
+        # horizontal move
+        self.hitbox_rect.x += self.direction.x * self.speed * dt
+        self.collision('horizontal')
+
+        # vertical move
         if self.jump_key:
             if self.on_surface:
                 self.direction.y = -self.jump_height
-                self.dust_effect.emit(count=3, pos=self.hitbox_rect.midbottom,
-                                      dispersion_width=self.hitbox_rect.width)
-
+                self.dust_effect.emit(
+                    count=2,
+                    pos=self.hitbox_rect.midbottom,
+                    dispersion_width=self.rect.width
+                )
             self.jump_key = False
-
-        self.hitbox_rect.x += self.direction.x * self.speed * dt
-        self.collision('horizontal')
 
         self.direction.y += self.gravity / 2 * dt
         self.hitbox_rect.y += self.direction.y * dt
         self.direction.y += self.gravity / 2 * dt
         self.collision('vertical')
+
+        self.rect.midbottom = self.hitbox_rect.midbottom
+
+        if (self.on_surface and self.last_state == 'falling'):
+            self.dust_effect.emit(
+                count=5,
+                pos=self.hitbox_rect.midbottom,
+                dispersion_width=self.rect.width
+            )
 
         if (self.on_surface and (self.direction.x == 0) and
                 (self.direction.y == 0)):
@@ -89,12 +103,11 @@ class Player(pygame.sprite.Sprite):
         if not self.on_surface and (self.direction.y < 0):
             self.state = 'jumping'
 
-        self.rect.midbottom = self.hitbox_rect.midbottom
-
     def check_on_surface(self):
         floor_rect = pygame.Rect(self.hitbox_rect.bottomleft,
                                  (self.hitbox_rect.width, 2))
         collide_rects = [sprite.rect for sprite in self.collision_group]
+        self.last_state = self.state
         self.on_surface = True if floor_rect.collidelist(collide_rects) >= 0 else False  # noqa: E501
 
     def collision(self, axis):

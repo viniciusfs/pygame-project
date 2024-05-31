@@ -129,7 +129,7 @@ class DustEffect(ParticleGroup):
 
         attr_dict = {
             'size': random.randint(2, 6),
-            'speed': random.randint(50, 100),
+            'speed': random.randint(25, 50),
             'color': random.choice(colors),
             'direction': random.choice(directions),
             'lifespan': random.randint(500, 1000),
