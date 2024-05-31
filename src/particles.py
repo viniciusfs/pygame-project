@@ -118,20 +118,11 @@ class DustEffect(ParticleGroup):
 
     def randomize_particle_attributes(self):
         colors = ["gray", "gray100", "gray60"]
-        directions = [
-            pygame.math.Vector2(0.25, -1),
-            pygame.math.Vector2(0.50, -0.75),
-            pygame.math.Vector2(0.75, -0.50),
-            pygame.math.Vector2(-0.25, -1),
-            pygame.math.Vector2(-0.50, -0.75),
-            pygame.math.Vector2(-0.75, -0.50),
-        ]
 
         attr_dict = {
             'size': random.randint(2, 6),
             'speed': random.randint(25, 50),
             'color': random.choice(colors),
-            'direction': random.choice(directions),
             'lifespan': random.randint(500, 1000),
             'fade_speed': 500
         }
@@ -139,18 +130,34 @@ class DustEffect(ParticleGroup):
         return attr_dict
 
     def emit(self, count, pos, dispersion_width):
-        dispersion_width = dispersion_width
-        leftmost = int(pos[0] - (dispersion_width / 2))
-        rightmost = int(pos[0] + (dispersion_width / 2))
+        center = dispersion_width / 2
+        leftmost = int(pos[0] - (center / 2))
+        rightmost = int(pos[0] + (center / 2))
 
         for _ in range(count):
-            particle_attrs = self.randomize_particle_attributes()
             particle_x = random.randint(leftmost, rightmost)
+
+            if particle_x < center:
+                directions = [
+                    pygame.math.Vector2(0.10, -1),
+                    pygame.math.Vector2(0.25, -0.75),
+                    pygame.math.Vector2(0.35, -0.50)
+                ]
+            else:
+                directions = [
+                    pygame.math.Vector2(-0.10, -1),
+                    pygame.math.Vector2(-0.25, -0.75),
+                    pygame.math.Vector2(-0.35, -0.50),
+                ]
+
+            particle_direction = random.choice(directions)
             particle_position = particle_x, pos[1]
+            particle_attrs = self.randomize_particle_attributes()
 
             particle = self.particle_class(
                 pos=particle_position,
-                gravity=2.5,
+                direction=particle_direction,
+                gravity=3,
                 fading=True,
                 **particle_attrs
             )
