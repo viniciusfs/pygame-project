@@ -4,7 +4,6 @@ import pygame
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_WIDTH, GAME_HEIGHT
 from states import Controller, SplashScreen, ExitScreen
 from platformer import PlatformerGame
-from particles import TestParticles
 
 
 class Game():
@@ -36,8 +35,6 @@ class Game():
                                   ExitScreen(controller=self.controller))
         self.controller.add_state('PlatformerGame',
                                   PlatformerGame(controller=self.controller))
-        self.controller.add_state('TestParticles',
-                                  TestParticles(controller=self.controller))
 
         self.controller.change_state('PlatformerGame')
         self.running = True
@@ -48,7 +45,7 @@ class Game():
         the game window.
         """
         while self.running:
-            dt = self.clock.tick() / 1000
+            dt = self.clock.tick(30) / 1000
 
             if self.controller.exit:
                 self.running = False

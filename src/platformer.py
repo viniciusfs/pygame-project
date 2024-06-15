@@ -8,6 +8,7 @@ from sprites import Sprite, Tile, AnimatedSprite
 from player import Player
 from loaders import load_sprite_sheet
 from particles import DustEffect
+from camera import CameraGroup
 from debug import debug
 
 
@@ -18,13 +19,14 @@ class PlatformerGame(GameState):
         self.player = None
         self.assets = {}
         self.sprite_groups = {
-            'all': pygame.sprite.Group(),
+            'all': CameraGroup(),
             'items': pygame.sprite.Group(),
             'coins': pygame.sprite.Group(),
             'keys': pygame.sprite.Group(),
             'terrain': pygame.sprite.Group(),
-            'particles': DustEffect(),
         }
+
+        self.dust_particles = DustEffect(sprite_group=self.sprite_groups['all'])
 
         self.levels = {
             1: 'example_levels/testing-1.tmx',
@@ -46,17 +48,14 @@ class PlatformerGame(GameState):
                     self.controller.change_state('ExitScreen')
 
         self.sprite_groups['all'].update(dt)
-        self.sprite_groups['particles'].update(dt)
         self.item_collision()
 
     def draw(self, screen):
         screen.fill("skyblue")
-        self.sprite_groups['all'].draw(screen)
-        self.sprite_groups['particles'].draw(screen)
+        self.sprite_groups['all'].custom_draw(screen, self.player)
 
         debug(self.stats, (10, 10), screen, DEBUG_FONT)
         debug(self.player.state, (10, 20), screen, DEBUG_FONT)
-        debug(len(self.sprite_groups['particles']), (10, 30), screen, DEBUG_FONT)
 
     def change_level(self):
         for group in self.sprite_groups.values():
@@ -172,7 +171,7 @@ class PlatformerGame(GameState):
                               groups=sprite_groups['all'],
                               collision_group=sprite_groups['terrain'],
                               frames=self.assets['player'],
-                              particle_emitter=self.sprite_groups['particles']
+                              particle_emitter=self.dust_particles
                               )
 
     def item_collision(self):

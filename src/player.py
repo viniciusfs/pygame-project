@@ -40,7 +40,6 @@ class Player(pygame.sprite.Sprite):
         self.move(dt)
         self.check_on_surface()
         self.animate(dt)
-        self.dust_effect.update(dt)
 
     def input(self):
         keys = pygame.key.get_pressed()

@@ -44,7 +44,6 @@ class Particle(pygame.sprite.Sprite):
     def update(self, dt):
         self.check_lifespan()
         self.move(dt)
-        self.check_position()
 
         if self.fading:
             self.fade(dt)
@@ -61,9 +60,9 @@ class Particle(pygame.sprite.Sprite):
         self.pos += self.direction * self.speed * dt
         self.rect.center = self.pos
 
-    def check_position(self):
-        if (self.pos[0] < -50 or self.pos[0] > GAME_WIDTH + 50 or self.pos[1] < -50 or self.pos[1] > GAME_HEIGHT + 50):  # noqa: E501
-            self.kill()
+#     def check_position(self):
+#         if (self.pos[0] < -50 or self.pos[0] > GAME_WIDTH + 50 or self.pos[1] < -50 or self.pos[1] > GAME_HEIGHT + 50):  # noqa: E501
+#             self.kill()
 
     def fade(self, dt):
         self.alpha -= self.fade_speed * dt
@@ -112,9 +111,10 @@ class GravityParticle(Particle):
         self.rect.center = self.pos
 
 
-class DustEffect(ParticleGroup):
-    def __init__(self):
-        super().__init__(particle_class=GravityParticle)
+class DustEffect():
+    def __init__(self, particle_class=GravityParticle, sprite_group=None):
+        self.particle_class = particle_class
+        self.sprite_group = sprite_group
 
     def randomize_particle_attributes(self):
         colors = ["gray", "gray100", "gray60"]
@@ -161,7 +161,7 @@ class DustEffect(ParticleGroup):
                 fading=True,
                 **particle_attrs
             )
-            self.add(particle)
+            self.sprite_group.add(particle)
 
 
 class TestParticles(GameState):
